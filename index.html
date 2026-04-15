@@ -321,18 +321,23 @@ h3 {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     background: var(--bg);
     font-size: 0.7rem;
     font-weight: 600;
     color: var(--text-3);
     user-select: none;
+    flex-shrink: 0;
 }
-.chain-link:hover {
+.chain-link:not(.broken):hover {
     border-color: var(--accent);
     background: var(--accent-bg);
     color: var(--accent);
-    transform: scale(1.1);
+    transform: scale(1.12);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.chain-link:not(.broken):active {
+    transform: scale(0.98);
 }
 .chain-link.active {
     border-color: var(--accent);
@@ -340,9 +345,9 @@ h3 {
     color: var(--surface);
 }
 .chain-link.broken {
-    opacity: 0.2;
+    opacity: 0.15;
     pointer-events: none;
-    text-decoration: line-through;
+    cursor: default;
 }
 .chain-connector {
     width: 20px;
@@ -524,6 +529,25 @@ h3 {
     text-align: center; font-size: 0.8rem; color: var(--text-3); line-height: 1.8;
 }
 .footer strong { color: var(--text-2); font-weight: 600; }
+
+/* ---- Animations ---- */
+@keyframes pulse {
+    0% { transform: scale(1); border-color: var(--accent); }
+    50% { transform: scale(1.08); opacity: 0.8; }
+    100% { transform: scale(1); border-color: var(--text-3); }
+}
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes linkBreak {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.95); }
+    100% { opacity: 0.2; transform: scale(1); }
+}
+.chain-link.breaking {
+    animation: linkBreak 0.4s ease-out;
+}
 
 /* ---- Responsive ---- */
 @media (max-width: 600px) {
@@ -1004,7 +1028,10 @@ function renderChainVisual(scenario) {
         const linkEl = document.createElement('div');
         linkEl.className = 'chain-link ' + (chainBrokenLinks.has(idx) ? 'broken' : '');
         linkEl.textContent = link.label;
-        linkEl.onclick = () => clickChainLink(idx, scenario);
+        linkEl.style.cursor = chainBrokenLinks.has(idx) ? 'default' : 'pointer';
+        linkEl.onclick = () => {
+            if (!chainBrokenLinks.has(idx)) clickChainLink(idx, scenario);
+        };
         linkEl.title = link.fullLabel;
         container.appendChild(linkEl);
 
@@ -1047,17 +1074,24 @@ function clickChainLink(idx, scenario) {
     const breakPoint = scenario.breakPoints.find(bp => bp.linkIdx === idx);
 
     if (!breakPoint) {
-        // Flash effect for non-breakpoint
-        const linkEl = document.querySelectorAll('.chain-link')[idx];
-        linkEl.style.borderColor = '#999';
-        setTimeout(() => { linkEl.style.borderColor = ''; }, 200);
+        // Pulse/shake effect for non-breakpoint
+        const allLinks = document.querySelectorAll('.chain-link:not(.broken)');
+        allLinks.forEach((el, i) => {
+            if (i === idx) {
+                el.style.animation = 'pulse 0.4s ease-out';
+                setTimeout(() => { el.style.animation = ''; }, 400);
+            }
+        });
         return;
     }
 
     chainCurrentLink = idx;
     document.getElementById('chain-break-point-label').textContent = scenario.links[idx].fullLabel;
     document.getElementById('chain-break-point-text').textContent = breakPoint.suggestion;
-    document.getElementById('chain-break-interface').style.display = 'block';
+
+    const breakInterface = document.getElementById('chain-break-interface');
+    breakInterface.style.display = 'block';
+    breakInterface.style.animation = 'slideDown 0.3s ease-out';
     document.getElementById('chain-feedback').style.display = 'none';
 
     document.querySelectorAll('.chain-skill-btn').forEach(btn => {
@@ -1085,12 +1119,24 @@ function selectChainSkill(btn, skill) {
     if (isCorrect) {
         btn.style.background = 'var(--accent-bg)';
         btn.style.color = 'var(--accent)';
+        btn.style.transform = 'scale(1.05)';
         feedback.innerHTML = `<strong style="color: var(--accent);">✓ Chain breaking!</strong> You interrupted the link.`;
+
+        // Animate the broken link
+        const allLinks = document.querySelectorAll('.chain-link');
+        let linkCount = 0;
+        allLinks.forEach((el, i) => {
+            if (linkCount === chainCurrentLink) {
+                el.classList.add('breaking');
+            }
+            if (!el.classList.contains('broken')) linkCount++;
+        });
 
         chainBrokenLinks.add(chainCurrentLink);
         chainBreaksFound++;
         document.getElementById('chain-breaks-count').textContent = chainBreaksFound;
-        document.getElementById('chain-progress-fill').style.width = (chainBreaksFound / scenario.breakPoints.length * 100) + '%';
+        const progressPercent = (chainBreaksFound / scenario.breakPoints.length * 100);
+        document.getElementById('chain-progress-fill').style.width = progressPercent + '%';
 
         // Re-render chain with broken link
         setTimeout(() => {
@@ -1101,6 +1147,7 @@ function selectChainSkill(btn, skill) {
             if (chainBreaksFound === scenario.breakPoints.length) {
                 setTimeout(() => {
                     document.getElementById('chain-next-container').style.display = 'block';
+                    document.getElementById('chain-next-container').style.animation = 'slideDown 0.3s ease-out';
                 }, 600);
             }
         }, 400);
