@@ -990,6 +990,156 @@ const chainScenarios = [
             { linkIdx: 3, suggestion: "After the binge: use Paced breathing instead of purging.", correct: ['P'] },
             { linkIdx: 0, suggestion: "Prevention: use consistent eating to avoid the vulnerability.", correct: ['I'] }
         ]
+    },
+    {
+        intro: "You're scrolling through Instagram before bed. Everyone's at the beach. Everyone looks different from you. Your chest gets tight. You can't sleep.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Tired, alone, comparing yourself to others." },
+            { label: "E", fullLabel: "Event", text: "See a photo of someone you know looking 'perfect.'" },
+            { label: "L1", fullLabel: "Link: Body awareness", text: "Suddenly hyper-focused on your own body." },
+            { label: "L2", fullLabel: "Link: Thought", text: "I'm disgusting. Everyone else is better." },
+            { label: "B", fullLabel: "Behavior", text: "Body checking in the mirror repeatedly." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "Put the phone down: use Intense exercise (take a walk, dance) to shift your nervous system.", correct: ['I'] },
+            { linkIdx: 2, suggestion: "In the body awareness: use Paired muscle relaxation to reconnect with your body without judgment.", correct: ['P2'] },
+            { linkIdx: 3, suggestion: "When the thought spirals: use Paced breathing to interrupt the spiral before checking.", correct: ['P'] }
+        ]
+    },
+    {
+        intro: "Sunday dinner is coming. Your family sits down to eat. Mom made pasta. You watch everyone else eat normally. Anxiety rises. You push food around your plate.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Family mealtime pressure, comparison watching." },
+            { label: "E", fullLabel: "Event", text: "Mom serves a 'fear food' pasta." },
+            { label: "L1", fullLabel: "Link: Anxiety", text: "Palms sweating. Throat tight. Hyperaware." },
+            { label: "L2", fullLabel: "Link: Thought", text: "Everyone is watching. I'll lose control." },
+            { label: "B", fullLabel: "Behavior", text: "Restriction or hiding food." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "Right when anxiety hits: use Temperature (cold hands under water) to anchor yourself.", correct: ['T'] },
+            { linkIdx: 2, suggestion: "In the tightness: use Paced breathing (in through nose, out through mouth slowly).", correct: ['P'] },
+            { linkIdx: 3, suggestion: "At the thought: use Paired muscle relaxation to lower the physical alarm response.", correct: ['P2'] }
+        ]
+    },
+    {
+        intro: "You had a small snack. You weren't even hungry, you just didn't know what else to do. Now the voice is loud: You messed up. You need to burn this off.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Boredom. Disconnected from body hunger cues." },
+            { label: "E", fullLabel: "Event", text: "Eat something without hunger." },
+            { label: "L1", fullLabel: "Link: Guilt", text: "Immediate regret. Heaviness in chest." },
+            { label: "L2", fullLabel: "Link: Thought", text: "I'm out of control. I need to punish myself." },
+            { label: "B", fullLabel: "Behavior", text: "Intense exercise or extreme restriction." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "When guilt hits: use Paired muscle relaxation to separate guilt from actual danger.", correct: ['P2'] },
+            { linkIdx: 2, suggestion: "Before the thought hardens: use Paced breathing to create space between thought and action.", correct: ['P'] },
+            { linkIdx: 3, suggestion: "At the urge to exercise: use Temperature (ice on wrists) to ground instead of move.", correct: ['T'] }
+        ]
+    },
+    {
+        intro: "Your friend cancels lunch at the last minute. You had the day planned around eating with them. Now it's 12pm and you're alone with a free hour.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Difficulty eating alone. Food tied to social safety." },
+            { label: "E", fullLabel: "Event", text: "Friend cancels. Plan is ruined." },
+            { label: "L1", fullLabel: "Link: Rejection", text: "Automatic thought: they don't want to see me." },
+            { label: "L2", fullLabel: "Link: Isolation", text: "Staying home feels safer than eating alone." },
+            { label: "B", fullLabel: "Behavior", text: "Skipping lunch entirely." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "At the rejection thought: use Paced breathing to slow the automatic assumption spiral.", correct: ['P'] },
+            { linkIdx: 2, suggestion: "In the isolation urge: use Intense exercise (walk somewhere, change location) to shift the feeling.", correct: ['I'] },
+            { linkIdx: 3, suggestion: "Before skipping: use Temperature (make hot tea, hold it) to make eating feel possible.", correct: ['T'] }
+        ]
+    },
+    {
+        intro: "You didn't sleep well. You're tired and irritable. Someone makes a joke about your body at lunch. You feel exposed. By the end of the day, you've barely eaten.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Sleep deprived. Low frustration tolerance." },
+            { label: "E", fullLabel: "Event", text: "Someone jokes about your body." },
+            { label: "L1", fullLabel: "Link: Hurt", text: "Feels true. Feels like proof they're right." },
+            { label: "L2", fullLabel: "Link: Shame spiral", text: "I should be smaller. Thinner. Less." },
+            { label: "B", fullLabel: "Behavior", text: "Restriction or binge/purge cycle." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "Right after the joke: use Temperature (splash cold water) to interrupt the shame hijack.", correct: ['T'] },
+            { linkIdx: 2, suggestion: "In the hurt: use Paired muscle relaxation to reduce the feeling of exposure.", correct: ['P2'] },
+            { linkIdx: 3, suggestion: "Before the spiral locks in: use Paced breathing and eat something small with someone you trust.", correct: ['P'] }
+        ]
+    },
+    {
+        intro: "You planned to eat 'perfectly' today. You had a calorie budget. But then you forgot your wallet and bought something unplanned at school. Now you're panicking about going over.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Rigid food rules. Black-and-white thinking." },
+            { label: "E", fullLabel: "Event", text: "Eat something not in the plan." },
+            { label: "L1", fullLabel: "Link: Loss of control", text: "Racing thoughts. Can't focus in class." },
+            { label: "L2", fullLabel: "Link: Catastrophizing", text: "One meal ruins everything. I'm failing." },
+            { label: "B", fullLabel: "Behavior", text: "Restrict for the rest of the day." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "When panic hits: use Intense exercise (go for a walk, do push-ups) to discharge the activation.", correct: ['I'] },
+            { linkIdx: 2, suggestion: "In the catastrophizing: use Paced breathing to interrupt the thought spiral before it locks.", correct: ['P'] },
+            { linkIdx: 3, suggestion: "Before restricting: use Temperature and talk to someone (parent, counselor, friend) to reality-check.", correct: ['T'] }
+        ]
+    },
+    {
+        intro: "It's late night. You're scrolling in bed. You're tired but can't sleep. The house is quiet. Suddenly you're hungry. You go to the kitchen for the third time.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Late night. Tired. Bored. Restless mind." },
+            { label: "E", fullLabel: "Event", text: "Notice hunger (or think you do)." },
+            { label: "L1", fullLabel: "Link: Confusion", text: "Is this real hunger or emotional hunger?" },
+            { label: "L2", fullLabel: "Link: Justification", text: "Might as well eat. Everyone's asleep anyway." },
+            { label: "B", fullLabel: "Behavior", text: "Late-night binge when nobody sees." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "When you notice hunger: use Paced breathing to check in with your body for 2 minutes first.", correct: ['P'] },
+            { linkIdx: 2, suggestion: "If restlessness is the real urge: use Intense exercise (do stretches, walk around) instead of eat.", correct: ['I'] },
+            { linkIdx: 3, suggestion: "Before going to kitchen: use Paired muscle relaxation to address the body activation, not food.", correct: ['P2'] }
+        ]
+    },
+    {
+        intro: "You're at a party. Everyone has food. Everyone's eating casually and not thinking about it. You feel hyperaware. You eat way more than you planned and hide it.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Social eating pressure. Comparison to others." },
+            { label: "E", fullLabel: "Event", text: "Realize you've eaten more than you 'should.'" },
+            { label: "L1", fullLabel: "Link: Embarrassment", text: "What if people noticed? What if they judge me?" },
+            { label: "L2", fullLabel: "Link: Self-judgment", text: "I'm gross. I can't do anything right." },
+            { label: "B", fullLabel: "Behavior", text: "Purge or restrict for days after." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "When awareness hits: use Temperature (go splash hands with cold water) to interrupt the spiral.", correct: ['T'] },
+            { linkIdx: 2, suggestion: "In the embarrassment: use Paired muscle relaxation to calm the physical alarm response.", correct: ['P2'] },
+            { linkIdx: 3, suggestion: "Before self-judgment locks in: use Paced breathing and talk to someone you trust about it.", correct: ['P'] }
+        ]
+    },
+    {
+        intro: "You got in a fight with your best friend. They said something that stung. You went home and locked your door. Now you don't want to eat for three days.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Conflict with close person. Fear of abandonment." },
+            { label: "E", fullLabel: "Event", text: "Best friend says something hurtful." },
+            { label: "L1", fullLabel: "Link: Rejection pain", text: "This means they don't care about me." },
+            { label: "L2", fullLabel: "Link: Punishment", text: "I deserve to feel bad. I should suffer." },
+            { label: "B", fullLabel: "Behavior", text: "Restriction as punishment." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "Right after the fight: use Intense exercise (run, dance hard) to process the emotion in your body.", correct: ['I'] },
+            { linkIdx: 2, suggestion: "In the rejection feeling: use Paced breathing to create space before making food decisions.", correct: ['P'] },
+            { linkIdx: 3, suggestion: "Before restricting: use Temperature (make yourself warm tea) as an act of self-care instead of punishment.", correct: ['T'] }
+        ]
+    },
+    {
+        intro: "You feel bloated. Your clothes feel tighter. You look in the mirror and spiral. You convince yourself you need to do something about it today. Right now.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Body image sensitivity. Hormonal shifts (period)." },
+            { label: "E", fullLabel: "Event", text: "Notice your body feels/looks different." },
+            { label: "L1", fullLabel: "Link: Panic", text: "This is permanent. You're losing control." },
+            { label: "L2", fullLabel: "Link: Urgency", text: "I HAVE to fix this today or I'll spiral." },
+            { label: "B", fullLabel: "Behavior", text: "Extreme exercise or fasting." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "When panic hits: use Temperature (cold shower or ice on face) to interrupt the spiral fast.", correct: ['T'] },
+            { linkIdx: 2, suggestion: "In the urgency: use Paced breathing to slow down the racing thoughts and body activation.", correct: ['P'] },
+            { linkIdx: 3, suggestion: "Before acting: use Paired muscle relaxation and wait 24 hours before deciding.", correct: ['P2'] }
+        ]
     }
 ];
 
