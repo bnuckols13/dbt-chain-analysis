@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breaking the Chain &mdash; DBT Distress Tolerance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --text:       #1C1917;
+    --text-2:     #57534E;
+    --text-3:     #A8A29E;
+    --accent:     #B05030;
+    --accent-bg:  #FAECE6;
+    --cool:       #2A7A6A;
+    --cool-bg:    #E8F4F0;
+    --border:     #E7E5E4;
+    --bg:         #FAFAF7;
+    --surface:    #FFFFFF;
+}
+
+body {
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--cool) 100%);
+}
+
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+}
+
+/* ---- Header ---- */
+.header { margin-bottom: 2.5rem; }
+.header-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+}
+h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+}
+.subtitle {
+    font-size: 1.05rem;
+    color: var(--text-2);
+    font-weight: 400;
+}
+
+/* ---- Nav ---- */
+.nav {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.nav button {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.75rem 1rem;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-3);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+}
+.nav button:hover { color: var(--text-2); }
+.nav button.active {
+    color: var(--accent);
+    font-weight: 600;
+    border-bottom-color: var(--accent);
+}
+
+/* ---- Pages ---- */
+.page { display: none; }
+.page.active { display: block; animation: appear 0.25s ease; }
+@keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---- Typography ---- */
+.section-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 0.5rem;
+}
+.section-label.warm { color: var(--accent); }
+.section-label.cool { color: var(--cool); }
+
+h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+}
+h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+.body-text {
+    font-size: 0.95rem;
+    color: var(--text-2);
+    line-height: 1.8;
+}
+.body-text + .body-text { margin-top: 0.75rem; }
+.body-text strong { color: var(--text); font-weight: 600; }
+
+.timing {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-3);
+    float: right;
+    margin-top: 0.2rem;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+}
+
+/* ---- Callout ---- */
+.callout {
+    border-left: 3px solid var(--border);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+}
+.callout.warm { border-left-color: var(--accent); background: var(--accent-bg); }
+.callout.cool { border-left-color: var(--cool); background: var(--cool-bg); }
+.callout .callout-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 0.4rem;
+}
+.callout.warm .callout-label { color: var(--accent); }
+.callout.cool .callout-label { color: var(--cool); }
+.callout p { font-size: 0.9rem; color: var(--text-2); line-height: 1.7; }
+.callout p strong { color: var(--text); }
+
+/* ---- Steps ---- */
+.steps { margin: 1.5rem 0; }
+.step {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+}
+.step:last-child { border-bottom: none; }
+.step-num {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-3);
+    flex-shrink: 0;
+    width: 1.5rem;
+    text-align: right;
+}
+.step-content { flex: 1; }
+.step-q { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+.step-hint { font-size: 0.82rem; color: var(--text-3); margin-top: 0.15rem; line-height: 1.6; }
+
+/* ---- Accordion ---- */
+.accordion { margin: 1.5rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.acc-item { border-bottom: 1px solid var(--border); }
+.acc-item:last-child { border-bottom: none; }
+.acc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    background: var(--surface);
+    transition: background 0.15s;
+    user-select: none;
+}
+.acc-header:hover { background: var(--bg); }
+.acc-title { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+.acc-icon { font-size: 1.1rem; color: var(--text-3); transition: transform 0.2s; font-weight: 300; line-height: 1; }
+.acc-item.open .acc-icon { transform: rotate(45deg); }
+.acc-body { display: none; padding: 0 1.25rem 1.25rem; background: var(--surface); }
+.acc-item.open .acc-body { display: block; }
+.acc-body p { font-size: 0.9rem; color: var(--text-2); line-height: 1.75; }
+.acc-body p + p { margin-top: 0.75rem; }
+.acc-body ul { list-style: none; margin-top: 0.5rem; }
+.acc-body ul li {
+    font-size: 0.9rem;
+    color: var(--text-2);
+    line-height: 1.75;
+    padding-left: 1rem;
+    position: relative;
+}
+.acc-body ul li::before {
+    content: '\00B7';
+    position: absolute;
+    left: 0;
+    color: var(--text-3);
+}
+.acc-body .aside {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-3);
+    padding-left: 1rem;
+    border-left: 2px solid var(--border);
+}
+
+/* ---- Letter blocks ---- */
+.letter-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+.letter-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+.letter-card:hover { border-color: var(--accent); }
+.letter-card.active { border-color: var(--accent); }
+.letter-card.cool-card:hover { border-color: var(--cool); }
+.letter-card.cool-card.active { border-color: var(--cool); }
+.letter-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+}
+.letter-char {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    width: 2rem;
+    flex-shrink: 0;
+    text-align: center;
+}
+.letter-card.cool-card .letter-char { color: var(--cool); }
+.letter-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+}
+.letter-brief {
+    font-size: 0.8rem;
+    color: var(--text-3);
+    margin-top: 0.1rem;
+}
+.letter-detail {
+    display: none;
+    padding: 1.25rem;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+}
+.letter-card.active .letter-detail { display: block; }
+.letter-detail p { font-size: 0.9rem; color: var(--text-2); line-height: 1.75; }
+.letter-detail p + p { margin-top: 0.75rem; }
+.letter-detail .aside {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-3);
+    padding-left: 1rem;
+    border-left: 2px solid var(--border);
+}
+
+/* ---- Scenario cards ---- */
+.scenario-stack { margin: 1.5rem 0; }
+.scenario-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+.scenario-body {
+    padding: 1.5rem 1.5rem 1.25rem;
+    background: var(--surface);
+}
+.scenario-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    margin-bottom: 0.75rem;
+}
+.scenario-tag.warm { color: var(--accent); background: var(--accent-bg); }
+.scenario-tag.cool { color: var(--cool); background: var(--cool-bg); }
+.scenario-text {
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.8;
+}
+.scenario-reveal {
+    display: none;
+    padding: 1.25rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+}
+.scenario-reveal.show { display: block; }
+.scenario-reveal p { font-size: 0.9rem; color: var(--text-2); line-height: 1.75; }
+.reveal-btn-row {
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+.reveal-btn {
+    width: 100%;
+    padding: 0.9rem;
+    border: none;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--text-3);
+    transition: background 0.15s, color 0.15s;
+}
+.reveal-btn:hover { background: var(--bg); color: var(--text-2); }
+.reveal-btn.revealed { color: var(--accent); background: var(--accent-bg); cursor: default; }
+
+/* ---- Discussion ---- */
+.questions { margin: 1.5rem 0; }
+.question { padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.question:last-child { border-bottom: none; }
+.question-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.3rem; }
+.question-text { font-size: 0.95rem; font-weight: 500; color: var(--text); line-height: 1.7; }
+.question-note { font-size: 0.82rem; font-style: italic; color: var(--text-3); margin-top: 0.3rem; }
+
+/* ---- Options grid ---- */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+.option {
+    background: var(--surface);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.option:hover { background: var(--bg); }
+.option.selected { background: var(--accent-bg); }
+.option-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+}
+.option-desc {
+    font-size: 0.8rem;
+    color: var(--text-3);
+    line-height: 1.5;
+}
+
+/* ---- Page nav ---- */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+.page-nav button {
+    background: none; border: none; font-family: inherit;
+    font-size: 0.9rem; font-weight: 500; color: var(--accent);
+    cursor: pointer; padding: 0.5rem 0; transition: opacity 0.15s;
+}
+.page-nav button:hover { opacity: 0.7; }
+.page-nav .ghost { visibility: hidden; }
+
+/* ---- Footer ---- */
+.footer {
+    margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    text-align: center; font-size: 0.8rem; color: var(--text-3); line-height: 1.8;
+}
+.footer strong { color: var(--text-2); font-weight: 600; }
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+    .container { padding: 2rem 1.25rem 3rem; }
+    h1 { font-size: 1.8rem; }
+    .options-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <header class="header">
+        <div class="header-label">DBT Skills &mdash; Adolescent Group</div>
+        <h1>Breaking the Chain</h1>
+        <p class="subtitle">Distress tolerance skills and the step-by-step path to behaviors you want to change</p>
+    </header>
+
+    <nav class="nav">
+        <button class="active" onclick="showPage(0, this)">Welcome</button>
+        <button onclick="showPage(1, this)">The Chain</button>
+        <button onclick="showPage(2, this)">DT Skills</button>
+        <button onclick="showPage(3, this)">Practice</button>
+        <button onclick="showPage(4, this)">Discussion</button>
+        <button onclick="showPage(5, this)">Closing</button>
+    </nav>
+
+    <!-- ==================== PAGE 0: WELCOME ==================== -->
+    <div class="page active">
+        <div class="section-label warm">Welcome</div>
+        <h2><span class="timing">8 to 10 min</span>About today</h2>
+        <p class="body-text">Every behavior has a chain of events leading up to it. A vulnerability, a trigger, a cascade of thoughts and feelings, and then the behavior itself. Today we learn two things: how to map that chain so you can see it clearly, and where to insert distress tolerance skills so the chain breaks before it reaches the behavior you're trying to change.</p>
+        <p class="body-text">These are crisis survival tools, not permanent solutions. They buy you time.</p>
+
+        <div class="callout warm">
+            <div class="callout-label">Confidentiality</div>
+            <p>What's shared here stays here. Names, stories, details, all of it is protected. The only exception is safety.</p>
+        </div>
+
+        <div class="callout">
+            <p><strong>You can pass at any point.</strong> No explanation needed. If something doesn't fit right now, say "pass" and we move on.</p>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label">Bridge questions</div>
+        <h2><span class="timing">10 to 12 min</span>Connecting in</h2>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-q">Think about the last time you did something you wished you hadn't. Can you remember what happened right before?</div>
+                    <div class="step-hint">Not the behavior itself. The moment before it. What were you feeling? Where were you?</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-q">When a strong urge hits, how long does it usually last before you give in?</div>
+                    <div class="step-hint">Seconds? Minutes? An hour? There's no wrong answer. We're mapping the timeline.</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <div class="step-q">Do you have a go-to way of getting through hard moments that actually works, even sometimes?</div>
+                    <div class="step-hint">Doesn't have to be a therapy skill. Could be music, walking, cold water, calling someone. What's already in your toolkit?</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-nav">
+            <button class="ghost">&#8592; Back</button>
+            <button onclick="showPage(1, navBtns[1])">The Chain &#8594;</button>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 1: THE CHAIN ==================== -->
+    <div class="page">
+        <div class="section-label warm">Chain analysis</div>
+        <h2><span class="timing">15 to 20 min</span>How behaviors happen</h2>
+        <p class="body-text">A behavioral chain has five parts. Every binge, every purge, every episode of restriction follows this sequence. Once you can see the chain, you can find the links where you have leverage.</p>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-q">Vulnerability factors</div>
+                    <div class="step-hint">What made you more susceptible that day? Didn't sleep, skipped breakfast, fought with a parent, hadn't talked to anyone in hours. These are the conditions, not the cause.</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-q">Prompting event</div>
+                    <div class="step-hint">The specific thing that set the chain in motion. A comment, a feeling, something you saw, a situation you walked into. One identifiable moment.</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <div class="step-q">Links: thoughts, feelings, body sensations</div>
+                    <div class="step-hint">"I'm disgusting" (thought) &rarr; chest tightness (body) &rarr; shame (feeling) &rarr; "I need this to stop" (thought) &rarr; numbness creeping in (body). Each link connects to the next.</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <div class="step-q">The behavior</div>
+                    <div class="step-hint">The binge, the purge, the restriction, the exercise. This is where the chain ends up if nothing interrupts it.</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <div class="step-q">Consequences</div>
+                    <div class="step-hint">What happened after. Temporary relief (the reinforcer), then guilt, physical discomfort, shame, avoidance. The consequences often become vulnerability factors for the next chain.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout warm">
+            <div class="callout-label">Clinical note</div>
+            <p>The behavior itself was functioning as a distress tolerance skill. It was the way you managed an unbearable feeling. Chain analysis doesn't judge that. It reveals the function so you can find alternatives that don't cost as much.</p>
+        </div>
+
+        <div class="page-nav">
+            <button onclick="showPage(0, navBtns[0])">&#8592; Welcome</button>
+            <button onclick="showPage(2, navBtns[2])">DT Skills &#8594;</button>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 2: DT SKILLS ==================== -->
+    <div class="page">
+        <div class="section-label cool">Distress tolerance</div>
+        <h2><span class="timing">10 to 15 min</span>Tools for the hardest moments</h2>
+        <p class="body-text">These skills are not designed to fix the problem or make you feel better. They keep you from making it worse. That distinction matters. When the urge is at its peak, you don't need insight. You need 90 seconds of survival.</p>
+
+        <div class="letter-grid">
+            <!-- T -->
+            <div class="letter-card" onclick="toggleLetter(this)">
+                <div class="letter-header">
+                    <div class="letter-char">T</div>
+                    <div>
+                        <div class="letter-name">Temperature</div>
+                        <div class="letter-brief">Cold resets your nervous system</div>
+                    </div>
+                </div>
+                <div class="letter-detail">
+                    <p>Hold ice cubes. Splash cold water on your face. Press a cold pack to your neck. The cold triggers your dive reflex, which slows your heart rate and pulls blood away from your extremities toward your core. Your body shifts from fight-or-flight to settle. This works in under 30 seconds.</p>
+                    <div class="aside">For eating disorder recovery: use before meals when anxiety peaks, not as a replacement for eating. The goal is to lower the alarm so you can sit down.</div>
+                </div>
+            </div>
+
+            <!-- I -->
+            <div class="letter-card" onclick="toggleLetter(this)">
+                <div class="letter-header">
+                    <div class="letter-char">I</div>
+                    <div>
+                        <div class="letter-name">Intense exercise</div>
+                        <div class="letter-brief">Burn off the activation</div>
+                    </div>
+                </div>
+                <div class="letter-detail">
+                    <p>Sprint, do jumping jacks, run stairs, push against a wall as hard as you can. When your body is flooded with adrenaline and cortisol, intense physical activity uses those chemicals for what they were designed for: movement. Five to ten minutes is enough.</p>
+                    <div class="aside">For eating disorder recovery: this is crisis exercise, not compensatory exercise. The purpose is nervous system regulation, not calorie burn. If exercise is part of your ED pattern, talk to your team about alternatives.</div>
+                </div>
+            </div>
+
+            <!-- P -->
+            <div class="letter-card" onclick="toggleLetter(this)">
+                <div class="letter-header">
+                    <div class="letter-char">P</div>
+                    <div>
+                        <div class="letter-name">Paced breathing</div>
+                        <div class="letter-brief">Long exhale, short inhale</div>
+                    </div>
+                </div>
+                <div class="letter-detail">
+                    <p>Breathe in for 4 counts. Breathe out for 6 to 8 counts. The exhale is the key. Every exhale activates your vagus nerve, which tells your body the threat is over. Five slow breaths can shift your nervous system state in under a minute.</p>
+                    <div class="aside">Practice when you're NOT in crisis so it becomes automatic. Your body needs to recognize the pattern before it can use it under pressure.</div>
+                </div>
+            </div>
+
+            <!-- P (cool) -->
+            <div class="letter-card cool-card" onclick="toggleLetter(this)">
+                <div class="letter-header">
+                    <div class="letter-char">P</div>
+                    <div>
+                        <div class="letter-name">Paired muscle relaxation</div>
+                        <div class="letter-brief">Tense and release</div>
+                    </div>
+                </div>
+                <div class="letter-detail">
+                    <p>Tense one muscle group (fists, shoulders, legs) while breathing in. Release everything on the exhale. The contrast between tension and release teaches your body what "settled" feels like. Work through your whole body in two to three minutes.</p>
+                    <div class="aside">Pairs well with paced breathing. The physical release gives your body a concrete sensation of letting go.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-nav">
+            <button onclick="showPage(1, navBtns[1])">&#8592; The Chain</button>
+            <button onclick="showPage(3, navBtns[3])">Practice &#8594;</button>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 3: PRACTICE ==================== -->
+    <div class="page">
+        <div class="section-label warm">Practice</div>
+        <h2><span class="timing">15 min</span>Break the chain</h2>
+        <p class="body-text">Each scenario shows a chain in progress. Your job: identify where a TIPP skill could interrupt it. Tap to see where the break points are.</p>
+
+        <div class="scenario-stack">
+            <!-- Scenario 1 -->
+            <div class="scenario-card">
+                <div class="scenario-body">
+                    <div class="scenario-tag warm">Chain</div>
+                    <p class="scenario-text">It's Saturday morning. Your parents had a fight at breakfast. You didn't eat. By noon you're alone in your room, feeling numb and hollow. You open the kitchen cabinet.</p>
+                </div>
+                <div class="scenario-reveal" id="reveal-0">
+                    <p><strong>Vulnerability:</strong> Parental conflict, skipped meal, isolation.</p>
+                    <p><strong>Prompting event:</strong> The fight.</p>
+                    <p><strong>Break points:</strong> After the fight: Temperature (ice on wrists) to interrupt the freeze. Before noon: Paced breathing to stay in your body. At the cabinet door: Intense exercise (10 jumping jacks) to discharge the numbness.</p>
+                    <p><strong>The chain has at least three places where a skill fits.</strong></p>
+                </div>
+                <div class="reveal-btn-row">
+                    <button class="reveal-btn" onclick="revealScenario(0, this)">Show break points</button>
+                </div>
+            </div>
+
+            <!-- Scenario 2 -->
+            <div class="scenario-card">
+                <div class="scenario-body">
+                    <div class="scenario-tag warm">Chain</div>
+                    <p class="scenario-text">You get your test back. It's a C. The thought hits: "I can't do anything right." By lunch, the thought has expanded to your body, your eating, your whole self. You skip lunch.</p>
+                </div>
+                <div class="scenario-reveal" id="reveal-1">
+                    <p><strong>Vulnerability:</strong> Perfectionism, self-worth tied to performance.</p>
+                    <p><strong>Prompting event:</strong> The grade.</p>
+                    <p><strong>Break points:</strong> Right after the thought: Paired muscle relaxation to interrupt the shame spiral physically. Before lunch: Temperature (cold water on face) to reset the nervous system. At the lunch table: Paced breathing through the first three bites.</p>
+                    <p><strong>The thought was a link, not a fact. Skills target the body, not the thought.</strong></p>
+                </div>
+                <div class="reveal-btn-row">
+                    <button class="reveal-btn" onclick="revealScenario(1, this)">Show break points</button>
+                </div>
+            </div>
+
+            <!-- Scenario 3 -->
+            <div class="scenario-card">
+                <div class="scenario-body">
+                    <div class="scenario-tag cool">Chain</div>
+                    <p class="scenario-text">Your friend comments on how much you're eating. Your face gets hot. You put your fork down. You don't eat again until the next day.</p>
+                </div>
+                <div class="scenario-reveal" id="reveal-2">
+                    <p><strong>Vulnerability:</strong> Rejection sensitivity, social eating anxiety.</p>
+                    <p><strong>Prompting event:</strong> The comment.</p>
+                    <p><strong>Break points:</strong> In the moment: Paced breathing under the table (4 in, 6 out) to keep the shame from flooding. After the meal: Intense exercise or cold water to complete the stress cycle. That evening: Call someone safe.</p>
+                    <p><strong>The restriction is the chain's end point. Every link before it is a place to intervene.</strong></p>
+                </div>
+                <div class="reveal-btn-row">
+                    <button class="reveal-btn" onclick="revealScenario(2, this)">Show break points</button>
+                </div>
+            </div>
+
+            <!-- Scenario 4 -->
+            <div class="scenario-card">
+                <div class="scenario-body">
+                    <div class="scenario-tag cool">Chain</div>
+                    <p class="scenario-text">You've been restricting all week. Friday night, the hunger hits all at once. You eat everything you can find. Then the panic starts.</p>
+                </div>
+                <div class="scenario-reveal" id="reveal-3">
+                    <p><strong>Vulnerability:</strong> Caloric deficit all week (the chain started days ago).</p>
+                    <p><strong>Prompting event:</strong> Biological hunger breaking through.</p>
+                    <p><strong>Break points:</strong> This chain needed earlier intervention: consistent eating throughout the week. In the binge moment: Temperature (ice) to slow the panic. After: Paced breathing instead of purging.</p>
+                    <p><strong>Some chains start long before the crisis. Vulnerability factors ARE the first link.</strong></p>
+                </div>
+                <div class="reveal-btn-row">
+                    <button class="reveal-btn" onclick="revealScenario(3, this)">Show break points</button>
+                </div>
+            </div>
+
+            <!-- Scenario 5 -->
+            <div class="scenario-card">
+                <div class="scenario-body">
+                    <div class="scenario-tag warm">Chain</div>
+                    <p class="scenario-text">You're scrolling social media before bed. You see someone's body transformation post. The comparison hits your chest like a punch. You set your alarm for 5am to run.</p>
+                </div>
+                <div class="scenario-reveal" id="reveal-4">
+                    <p><strong>Vulnerability:</strong> Nighttime, alone, tired, on phone.</p>
+                    <p><strong>Prompting event:</strong> The post.</p>
+                    <p><strong>Break points:</strong> Before bed: Put the phone in another room (that's a behavioral link you can remove). After the comparison thought: Paired muscle relaxation to release the chest tension. Before setting the alarm: Pros and cons of running vs. sleeping.</p>
+                    <p><strong>The vulnerability factor here is the situation itself. Sometimes the best skill is not being in the situation.</strong></p>
+                </div>
+                <div class="reveal-btn-row">
+                    <button class="reveal-btn" onclick="revealScenario(4, this)">Show break points</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-nav">
+            <button onclick="showPage(2, navBtns[2])">&#8592; DT Skills</button>
+            <button onclick="showPage(4, navBtns[4])">Discussion &#8594;</button>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 4: DISCUSSION ==================== -->
+    <div class="page">
+        <div class="section-label warm">Group process</div>
+        <h2><span class="timing">10 min</span>Going deeper</h2>
+
+        <div class="questions">
+            <div class="question">
+                <div class="question-label">Patterns</div>
+                <p class="question-text">When you think about your own chains, where do they usually start? Is it a vulnerability factor, a specific trigger, or do you only notice once you're already deep in the links?</p>
+                <p class="question-note">Most people notice late. That's normal. The goal is to move awareness earlier over time, not to catch every chain at the first link.</p>
+            </div>
+            <div class="question">
+                <div class="question-label">Skills</div>
+                <p class="question-text">Which TIPP skill sounds most doable for you right now? Which one sounds impossible?</p>
+                <p class="question-note">The impossible one is worth exploring. Sometimes resistance points to the skill they need most.</p>
+            </div>
+            <div class="question">
+                <div class="question-label">Function</div>
+                <p class="question-text">If your eating disorder behavior is doing the job of a distress tolerance skill, what feeling is it managing for you?</p>
+                <p class="question-note">This is the core question. If they can name the feeling the behavior manages, they can find a TIPP skill that targets the same feeling.</p>
+            </div>
+            <div class="question">
+                <div class="question-label">Barriers</div>
+                <p class="question-text">What gets in the way of using a skill when you actually need one?</p>
+                <p class="question-note">Common answers: I forget, I don't believe it will work, the urge is too strong, I don't care in the moment. Each barrier has a different solution.</p>
+            </div>
+        </div>
+
+        <div class="page-nav">
+            <button onclick="showPage(3, navBtns[3])">&#8592; Practice</button>
+            <button onclick="showPage(5, navBtns[5])">Closing &#8594;</button>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 5: CLOSING ==================== -->
+    <div class="page">
+        <div class="section-label warm">This week</div>
+        <h2><span class="timing">5 to 8 min</span>Pick one</h2>
+        <p class="body-text">Choose one experiment. You're not mastering a skill. You're trying it once, in one moment, and seeing what happens.</p>
+
+        <div class="options-grid">
+            <div class="option" onclick="selectOption(this)">
+                <div class="option-label">Try TIPP once</div>
+                <div class="option-desc">Next time an urge hits, use one TIPP skill before acting on it. Ice, sprinting, breathing, tensing. Just one.</div>
+            </div>
+            <div class="option" onclick="selectOption(this)">
+                <div class="option-label">Map one chain</div>
+                <div class="option-desc">After a difficult moment this week, write down the chain: vulnerability, trigger, links, behavior, consequences. No judgment. Just the map.</div>
+            </div>
+            <div class="option" onclick="selectOption(this)">
+                <div class="option-label">Spot the vulnerability</div>
+                <div class="option-desc">Each morning, check in: am I tired, hungry, lonely, or stressed? Those conditions make chains more likely. Name them before they run.</div>
+            </div>
+            <div class="option" onclick="selectOption(this)">
+                <div class="option-label">Surf one urge</div>
+                <div class="option-desc">When an urge peaks, set a timer for 90 seconds. Breathe through it. See if the wave comes down even slightly. It usually does.</div>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <h3>Checkout</h3>
+        <p class="body-text">One word for how you're leaving today. No explanation required.</p>
+
+        <div class="callout warm">
+            <div class="callout-label">Facilitator note</div>
+            <p>If a group member discloses active self-harm or suicidal ideation during the session, pause the group content and follow your site's safety protocol. Chain analysis can be adapted for self-harm chains in individual sessions with appropriate clinical support.</p>
+        </div>
+
+        <div class="page-nav">
+            <button onclick="showPage(4, navBtns[4])">&#8592; Discussion</button>
+            <button class="ghost">Next &#8594;</button>
+        </div>
+
+        <div class="footer">
+            <strong>Crisis resources</strong><br>
+            988 Suicide &amp; Crisis Lifeline: call or text <strong>988</strong><br>
+            Crisis Text Line: text <strong>HOME</strong> to <strong>741741</strong><br>
+            If you are in immediate danger, call <strong>911</strong>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const pages = document.querySelectorAll('.page');
+const navBtns = document.querySelectorAll('.nav button');
+
+function showPage(i, btn) {
+    pages.forEach(p => p.classList.remove('active'));
+    navBtns.forEach(b => b.classList.remove('active'));
+    pages[i].classList.add('active');
+    if (btn) btn.classList.add('active');
+    else navBtns[i].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleAcc(header) {
+    const item = header.parentElement;
+    item.classList.toggle('open');
+}
+
+function toggleLetter(card) {
+    const wasActive = card.classList.contains('active');
+    card.parentElement.querySelectorAll('.letter-card').forEach(c => c.classList.remove('active'));
+    if (!wasActive) card.classList.add('active');
+}
+
+function revealScenario(index, btn) {
+    const reveal = document.getElementById('reveal-' + index);
+    if (reveal.classList.contains('show')) return;
+    reveal.classList.add('show');
+    btn.textContent = 'Break points shown';
+    btn.classList.add('revealed');
+}
+
+function selectOption(el) {
+    el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+}
+</script>
+</body>
+</html>
