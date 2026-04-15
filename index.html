@@ -300,6 +300,112 @@ h3 {
     border-left: 2px solid var(--border);
 }
 
+/* ---- Chain visualization ---- */
+.chain-visual {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+}
+.chain-link {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--text-3);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--bg);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-3);
+    user-select: none;
+}
+.chain-link:hover {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+    color: var(--accent);
+    transform: scale(1.1);
+}
+.chain-link.active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--surface);
+}
+.chain-link.broken {
+    opacity: 0.2;
+    pointer-events: none;
+    text-decoration: line-through;
+}
+.chain-connector {
+    width: 20px;
+    height: 2px;
+    background: var(--text-3);
+    flex-shrink: 0;
+    opacity: 0.3;
+}
+.chain-connector.broken {
+    opacity: 0.1;
+    text-decoration: line-through;
+}
+.chain-end {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--cool);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cool-bg);
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--cool);
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* ---- Urgency meter ---- */
+.urgency-meter {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+.urgency-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 0.5rem;
+}
+.urgency-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+.urgency-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--cool));
+    transition: width 0.4s ease;
+    width: 30%;
+}
+.urgency-text {
+    font-size: 0.75rem;
+    color: var(--text-3);
+    text-align: center;
+}
+
 /* ---- Scenario cards ---- */
 .scenario-stack { margin: 1.5rem 0; }
 .scenario-card {
@@ -631,93 +737,66 @@ h3 {
     <!-- ==================== PAGE 3: PRACTICE ==================== -->
     <div class="page">
         <div class="section-label warm">Practice</div>
-        <h2><span class="timing">15 min</span>Break the chain</h2>
-        <p class="body-text">Each scenario shows a chain in progress. Your job: identify where a TIPP skill could interrupt it. Tap to see where the break points are.</p>
+        <h2><span class="timing">15 min</span>Build your break</h2>
+        <p class="body-text">Each chain scenario unfolds link by link. Your job: at each link, choose which TIPP skill would stop it. The chain gets shorter every time you break it.</p>
 
-        <div class="scenario-stack">
-            <!-- Scenario 1 -->
-            <div class="scenario-card">
-                <div class="scenario-body">
-                    <div class="scenario-tag warm">Chain</div>
-                    <p class="scenario-text">It's Saturday morning. Your parents had a fight at breakfast. You didn't eat. By noon you're alone in your room, feeling numb and hollow. You open the kitchen cabinet.</p>
-                </div>
-                <div class="scenario-reveal" id="reveal-0">
-                    <p><strong>Vulnerability:</strong> Parental conflict, skipped meal, isolation.</p>
-                    <p><strong>Prompting event:</strong> The fight.</p>
-                    <p><strong>Break points:</strong> After the fight: Temperature (ice on wrists) to interrupt the freeze. Before noon: Paced breathing to stay in your body. At the cabinet door: Intense exercise (10 jumping jacks) to discharge the numbness.</p>
-                    <p><strong>The chain has at least three places where a skill fits.</strong></p>
-                </div>
-                <div class="reveal-btn-row">
-                    <button class="reveal-btn" onclick="revealScenario(0, this)">Show break points</button>
-                </div>
+        <div id="chain-game-container" style="margin: 1.5rem 0;">
+            <!-- Scenario intro -->
+            <div id="chain-scenario-intro" style="padding: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1.5rem;">
+                <p class="scenario-text" id="chain-intro-text" style="font-size: 0.95rem; color: var(--text-2); line-height: 1.8;"></p>
             </div>
 
-            <!-- Scenario 2 -->
-            <div class="scenario-card">
-                <div class="scenario-body">
-                    <div class="scenario-tag warm">Chain</div>
-                    <p class="scenario-text">You get your test back. It's a C. The thought hits: "I can't do anything right." By lunch, the thought has expanded to your body, your eating, your whole self. You skip lunch.</p>
+            <!-- Visual chain -->
+            <div class="chain-visual" id="chain-visual-container"></div>
+
+            <!-- Urgency meter -->
+            <div class="urgency-meter">
+                <div class="urgency-label">How close are you to the behavior?</div>
+                <div class="urgency-bar">
+                    <div class="urgency-fill" id="urgency-fill"></div>
                 </div>
-                <div class="scenario-reveal" id="reveal-1">
-                    <p><strong>Vulnerability:</strong> Perfectionism, self-worth tied to performance.</p>
-                    <p><strong>Prompting event:</strong> The grade.</p>
-                    <p><strong>Break points:</strong> Right after the thought: Paired muscle relaxation to interrupt the shame spiral physically. Before lunch: Temperature (cold water on face) to reset the nervous system. At the lunch table: Paced breathing through the first three bites.</p>
-                    <p><strong>The thought was a link, not a fact. Skills target the body, not the thought.</strong></p>
-                </div>
-                <div class="reveal-btn-row">
-                    <button class="reveal-btn" onclick="revealScenario(1, this)">Show break points</button>
-                </div>
+                <div class="urgency-text" id="urgency-text">Behavior coming...</div>
             </div>
 
-            <!-- Scenario 3 -->
-            <div class="scenario-card">
-                <div class="scenario-body">
-                    <div class="scenario-tag cool">Chain</div>
-                    <p class="scenario-text">Your friend comments on how much you're eating. Your face gets hot. You put your fork down. You don't eat again until the next day.</p>
+            <!-- Break point interface -->
+            <div id="chain-break-interface" style="display: none; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface); margin-bottom: 1.5rem;">
+                <div style="padding: 1.25rem; border-bottom: 1px solid var(--border);">
+                    <p style="font-size: 0.85rem; color: var(--text-2); margin-bottom: 0.75rem;"><strong id="chain-break-point-label">At this link:</strong></p>
+                    <p id="chain-break-point-text" style="font-size: 0.9rem; color: var(--text-2); line-height: 1.75; font-style: italic; margin-bottom: 0.75rem;"></p>
                 </div>
-                <div class="scenario-reveal" id="reveal-2">
-                    <p><strong>Vulnerability:</strong> Rejection sensitivity, social eating anxiety.</p>
-                    <p><strong>Prompting event:</strong> The comment.</p>
-                    <p><strong>Break points:</strong> In the moment: Paced breathing under the table (4 in, 6 out) to keep the shame from flooding. After the meal: Intense exercise or cold water to complete the stress cycle. That evening: Call someone safe.</p>
-                    <p><strong>The restriction is the chain's end point. Every link before it is a place to intervene.</strong></p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border);">
+                    <button class="chain-skill-btn" onclick="selectChainSkill(this, 'T')" style="padding: 1rem; border: none; background: var(--surface); cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--text-2); transition: background 0.15s;">
+                        <div style="color: var(--accent); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.25rem;">T</div>
+                        Temperature
+                    </button>
+                    <button class="chain-skill-btn" onclick="selectChainSkill(this, 'I')" style="padding: 1rem; border: none; background: var(--surface); cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--text-2); transition: background 0.15s;">
+                        <div style="color: var(--accent); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.25rem;">I</div>
+                        Intense exercise
+                    </button>
+                    <button class="chain-skill-btn" onclick="selectChainSkill(this, 'P')" style="padding: 1rem; border: none; background: var(--surface); cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--text-2); transition: background 0.15s; border-top: 1px solid var(--border);">
+                        <div style="color: var(--accent); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.25rem;">P</div>
+                        Paced breathing
+                    </button>
+                    <button class="chain-skill-btn" onclick="selectChainSkill(this, 'P2')" style="padding: 1rem; border: none; background: var(--surface); cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--text-2); transition: background 0.15s; border-top: 1px solid var(--border);">
+                        <div style="color: var(--accent); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.25rem;">P</div>
+                        Paired muscle relaxation
+                    </button>
                 </div>
-                <div class="reveal-btn-row">
-                    <button class="reveal-btn" onclick="revealScenario(2, this)">Show break points</button>
-                </div>
+                <div id="chain-feedback" style="display: none; padding: 1rem; background: var(--bg); border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--text-2); line-height: 1.75;"></div>
             </div>
 
-            <!-- Scenario 4 -->
-            <div class="scenario-card">
-                <div class="scenario-body">
-                    <div class="scenario-tag cool">Chain</div>
-                    <p class="scenario-text">You've been restricting all week. Friday night, the hunger hits all at once. You eat everything you can find. Then the panic starts.</p>
+            <!-- Progress -->
+            <div style="margin: 1rem 0; padding: 0.75rem; background: var(--bg); border-radius: 6px; text-align: center;">
+                <p style="font-size: 0.8rem; color: var(--text-3); margin-bottom: 0.5rem;">Chain progress</p>
+                <div id="chain-progress-bar" style="height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;">
+                    <div id="chain-progress-fill" style="height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease;"></div>
                 </div>
-                <div class="scenario-reveal" id="reveal-3">
-                    <p><strong>Vulnerability:</strong> Caloric deficit all week (the chain started days ago).</p>
-                    <p><strong>Prompting event:</strong> Biological hunger breaking through.</p>
-                    <p><strong>Break points:</strong> This chain needed earlier intervention: consistent eating throughout the week. In the binge moment: Temperature (ice) to slow the panic. After: Paced breathing instead of purging.</p>
-                    <p><strong>Some chains start long before the crisis. Vulnerability factors ARE the first link.</strong></p>
-                </div>
-                <div class="reveal-btn-row">
-                    <button class="reveal-btn" onclick="revealScenario(3, this)">Show break points</button>
-                </div>
+                <p style="font-size: 0.75rem; color: var(--text-3); margin-top: 0.5rem;"><span id="chain-breaks-count">0</span> break points found</p>
             </div>
 
-            <!-- Scenario 5 -->
-            <div class="scenario-card">
-                <div class="scenario-body">
-                    <div class="scenario-tag warm">Chain</div>
-                    <p class="scenario-text">You're scrolling social media before bed. You see someone's body transformation post. The comparison hits your chest like a punch. You set your alarm for 5am to run.</p>
-                </div>
-                <div class="scenario-reveal" id="reveal-4">
-                    <p><strong>Vulnerability:</strong> Nighttime, alone, tired, on phone.</p>
-                    <p><strong>Prompting event:</strong> The post.</p>
-                    <p><strong>Break points:</strong> Before bed: Put the phone in another room (that's a behavioral link you can remove). After the comparison thought: Paired muscle relaxation to release the chest tension. Before setting the alarm: Pros and cons of running vs. sleeping.</p>
-                    <p><strong>The vulnerability factor here is the situation itself. Sometimes the best skill is not being in the situation.</strong></p>
-                </div>
-                <div class="reveal-btn-row">
-                    <button class="reveal-btn" onclick="revealScenario(4, this)">Show break points</button>
-                </div>
+            <!-- Next button -->
+            <div id="chain-next-container" style="display: none; text-align: right;">
+                <button onclick="nextChainScenario()" style="background: none; border: none; font-family: inherit; font-size: 0.9rem; font-weight: 500; color: var(--accent); cursor: pointer; padding: 0.5rem 0; transition: opacity 0.15s;">Next scenario &#8594;</button>
             </div>
         </div>
 
@@ -822,6 +901,7 @@ function showPage(i, btn) {
     if (btn) btn.classList.add('active');
     else navBtns[i].classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (i === 3) initChainGame();
 }
 
 function toggleAcc(header) {
@@ -835,17 +915,216 @@ function toggleLetter(card) {
     if (!wasActive) card.classList.add('active');
 }
 
-function revealScenario(index, btn) {
-    const reveal = document.getElementById('reveal-' + index);
-    if (reveal.classList.contains('show')) return;
-    reveal.classList.add('show');
-    btn.textContent = 'Break points shown';
-    btn.classList.add('revealed');
-}
-
 function selectOption(el) {
     el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
+}
+
+/* ===== CHAIN BREAKER GAME ===== */
+const chainScenarios = [
+    {
+        intro: "It's Saturday morning. Your parents had a fight at breakfast. You didn't eat. By noon you're alone in your room, feeling numb and hollow.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Parental conflict, skipped meal, isolation." },
+            { label: "E", fullLabel: "Event", text: "The fight at breakfast." },
+            { label: "L1", fullLabel: "Link: Emotion", text: "Numbness spreading." },
+            { label: "L2", fullLabel: "Link: Thought", text: "Nothing matters. I'm too much." },
+            { label: "B", fullLabel: "Behavior", text: "Opening the cabinet." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "After the fight: use Temperature (cold water on face or ice on wrists) to interrupt the freeze.", correct: ['T'] },
+            { linkIdx: 2, suggestion: "In the numbness: use Intense exercise (10 jumping jacks, walk fast) to discharge frozen energy.", correct: ['I'] },
+            { linkIdx: 3, suggestion: "When the thought spirals: use Paced breathing (4 in, 6 out) to slow down the system.", correct: ['P'] }
+        ]
+    },
+    {
+        intro: "You get your test back. It's a C. The thought hits: I can't do anything right. By lunch, this thought has expanded to your body, your eating, your whole self.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Perfectionism tied to performance." },
+            { label: "E", fullLabel: "Event", text: "The grade. C feels like failure." },
+            { label: "L1", fullLabel: "Link: Shame", text: "Hot face. Chest tightness." },
+            { label: "L2", fullLabel: "Link: Spiral", text: "I'm stupid. I'm a failure." },
+            { label: "B", fullLabel: "Behavior", text: "Skipping lunch." }
+        ],
+        breakPoints: [
+            { linkIdx: 1, suggestion: "Right after the thought: use Paired muscle relaxation to interrupt the shame spiral in your body.", correct: ['P2'] },
+            { linkIdx: 2, suggestion: "In the chest tightness: use Temperature (cold water on face).", correct: ['T'] },
+            { linkIdx: 3, suggestion: "At lunch: use Paced breathing to calm your nervous system enough to eat.", correct: ['P'] }
+        ]
+    },
+    {
+        intro: "You've been restricting all week. Friday night, the hunger hits all at once. You eat everything you can find. Then the panic starts. You want to purge.",
+        links: [
+            { label: "V", fullLabel: "Vulnerability", text: "Caloric deficit all week." },
+            { label: "E", fullLabel: "Event", text: "Biological hunger breaks through." },
+            { label: "L1", fullLabel: "Link: Panic", text: "Overwhelm. Loss of control." },
+            { label: "L2", fullLabel: "Link: Disgust", text: "Shame and regret flooding." },
+            { label: "B", fullLabel: "Behavior", text: "Purging impulse." }
+        ],
+        breakPoints: [
+            { linkIdx: 2, suggestion: "In the panic: use Temperature (ice in mouth) to slow activation and interrupt purge.", correct: ['T'] },
+            { linkIdx: 3, suggestion: "After the binge: use Paced breathing instead of purging.", correct: ['P'] },
+            { linkIdx: 0, suggestion: "Prevention: use consistent eating to avoid the vulnerability.", correct: ['I'] }
+        ]
+    }
+];
+
+let chainGameIndex = 0;
+let chainCurrentLink = 0;
+let chainBreaksFound = 0;
+let chainBrokenLinks = new Set();
+
+function initChainGame() {
+    chainGameIndex = 0;
+    chainCurrentLink = 0;
+    chainBreaksFound = 0;
+    chainBrokenLinks.clear();
+    loadChainScenario();
+}
+
+function loadChainScenario() {
+    const scenario = chainScenarios[chainGameIndex];
+    document.getElementById('chain-intro-text').textContent = scenario.intro;
+
+    renderChainVisual(scenario);
+    updateUrgencyMeter();
+
+    document.getElementById('chain-break-interface').style.display = 'none';
+    document.getElementById('chain-next-container').style.display = 'none';
+    document.getElementById('chain-progress-fill').style.width = '0%';
+    document.getElementById('chain-breaks-count').textContent = chainBreaksFound;
+}
+
+function renderChainVisual(scenario) {
+    const container = document.getElementById('chain-visual-container');
+    container.innerHTML = '';
+
+    scenario.links.forEach((link, idx) => {
+        // Link element
+        const linkEl = document.createElement('div');
+        linkEl.className = 'chain-link ' + (chainBrokenLinks.has(idx) ? 'broken' : '');
+        linkEl.textContent = link.label;
+        linkEl.onclick = () => clickChainLink(idx, scenario);
+        linkEl.title = link.fullLabel;
+        container.appendChild(linkEl);
+
+        // Connector (except after last link)
+        if (idx < scenario.links.length - 1) {
+            const connEl = document.createElement('div');
+            connEl.className = 'chain-connector ' + (chainBrokenLinks.has(idx) ? 'broken' : '');
+            connEl.textContent = '—';
+            container.appendChild(connEl);
+        }
+    });
+
+    // End (behavior)
+    const endEl = document.createElement('div');
+    endEl.className = 'chain-end';
+    endEl.textContent = 'BEHAVIOR';
+    container.appendChild(endEl);
+}
+
+function updateUrgencyMeter() {
+    const scenario = chainScenarios[chainGameIndex];
+    const totalBreakPoints = scenario.breakPoints.length;
+    const unbrokenPoints = totalBreakPoints - chainBreaksFound;
+    const urgencyPercent = Math.max(20, (unbrokenPoints / totalBreakPoints) * 100);
+
+    document.getElementById('urgency-fill').style.width = urgencyPercent + '%';
+
+    if (unbrokenPoints === 0) {
+        document.getElementById('urgency-text').textContent = '✓ Chain broken!';
+    } else if (urgencyPercent > 50) {
+        document.getElementById('urgency-text').textContent = 'Still time... find break points fast';
+    } else {
+        document.getElementById('urgency-text').textContent = 'Getting close to behavior...';
+    }
+}
+
+function clickChainLink(idx, scenario) {
+    if (chainBrokenLinks.has(idx)) return;
+
+    const breakPoint = scenario.breakPoints.find(bp => bp.linkIdx === idx);
+
+    if (!breakPoint) {
+        // Flash effect for non-breakpoint
+        const linkEl = document.querySelectorAll('.chain-link')[idx];
+        linkEl.style.borderColor = '#999';
+        setTimeout(() => { linkEl.style.borderColor = ''; }, 200);
+        return;
+    }
+
+    chainCurrentLink = idx;
+    document.getElementById('chain-break-point-label').textContent = scenario.links[idx].fullLabel;
+    document.getElementById('chain-break-point-text').textContent = breakPoint.suggestion;
+    document.getElementById('chain-break-interface').style.display = 'block';
+    document.getElementById('chain-feedback').style.display = 'none';
+
+    document.querySelectorAll('.chain-skill-btn').forEach(btn => {
+        btn.style.background = 'var(--surface)';
+        btn.style.color = 'var(--text-2)';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+    });
+}
+
+function selectChainSkill(btn, skill) {
+    const scenario = chainScenarios[chainGameIndex];
+    const breakPoint = scenario.breakPoints.find(bp => bp.linkIdx === chainCurrentLink);
+    const isCorrect = breakPoint.correct.includes(skill);
+
+    const feedback = document.getElementById('chain-feedback');
+    feedback.style.display = 'block';
+
+    document.querySelectorAll('.chain-skill-btn').forEach(b => {
+        b.disabled = true;
+        if (b !== btn) b.style.opacity = '0.3';
+    });
+
+    if (isCorrect) {
+        btn.style.background = 'var(--accent-bg)';
+        btn.style.color = 'var(--accent)';
+        feedback.innerHTML = `<strong style="color: var(--accent);">✓ Chain breaking!</strong> You interrupted the link.`;
+
+        chainBrokenLinks.add(chainCurrentLink);
+        chainBreaksFound++;
+        document.getElementById('chain-breaks-count').textContent = chainBreaksFound;
+        document.getElementById('chain-progress-fill').style.width = (chainBreaksFound / scenario.breakPoints.length * 100) + '%';
+
+        // Re-render chain with broken link
+        setTimeout(() => {
+            renderChainVisual(scenario);
+            updateUrgencyMeter();
+            document.getElementById('chain-break-interface').style.display = 'none';
+
+            if (chainBreaksFound === scenario.breakPoints.length) {
+                setTimeout(() => {
+                    document.getElementById('chain-next-container').style.display = 'block';
+                }, 600);
+            }
+        }, 400);
+    } else {
+        btn.style.background = '#E7E5E4';
+        btn.style.color = '#A8A29E';
+        feedback.innerHTML = `<strong>Not the right fit.</strong> Try a different skill for this link.`;
+    }
+}
+
+function nextChainScenario() {
+    chainGameIndex++;
+    if (chainGameIndex < chainScenarios.length) {
+        chainCurrentLink = 0;
+        chainBrokenLinks.clear();
+        loadChainScenario();
+    } else {
+        document.getElementById('chain-game-container').innerHTML = `
+            <div style="padding: 2rem; text-align: center; background: var(--accent-bg); border-radius: 8px;">
+                <p style="font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">You broke all the chains.</p>
+                <p style="font-size: 0.9rem; color: var(--text-2); line-height: 1.7;">Every chain has multiple places where a skill can interrupt. The skill is noticing the links earlier and earlier. The earlier you intervene, the easier it is to break.</p>
+            </div>
+        `;
+    }
 }
 </script>
 </body>
