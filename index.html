@@ -806,7 +806,15 @@ h3 {
                         Paired muscle relaxation
                     </button>
                 </div>
-                <div id="chain-feedback" style="display: none; padding: 1rem; background: var(--bg); border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--text-2); line-height: 1.75;"></div>
+                <div id="chain-feedback" style="display: none; padding: 1rem; background: var(--bg); border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--text-2); line-height: 1.75;">
+                    <p style="font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">Why might this skill help?</p>
+                    <input id="chain-reflection-input" type="text" placeholder="Optional: write your thinking..." style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; font-family: inherit; font-size: 0.85rem; margin-bottom: 0.75rem;">
+                    <div id="chain-tips" style="background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.75rem; margin-bottom: 0.75rem; line-height: 1.6; font-size: 0.85rem; color: var(--text-2);"></div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="continueChainBreak()" style="flex: 1; padding: 0.5rem; background: var(--accent); color: white; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.85rem;">Got it</button>
+                        <button onclick="skipChainReflection()" style="flex: 1; padding: 0.5rem; background: none; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.85rem; color: var(--text-3);">Skip</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Progress -->
@@ -1147,6 +1155,14 @@ let chainGameIndex = 0;
 let chainCurrentLink = 0;
 let chainBreaksFound = 0;
 let chainBrokenLinks = new Set();
+let chainSelectedSkill = null;
+
+const skillTips = {
+    'T': "Temperature shifts your nervous system fast. Cold water on your face, ice on your wrists, or even holding something cold can interrupt the escalation and give you space to think.",
+    'I': "Intense exercise discharges the activation that's building. It doesn't have to be pretty—jumping jacks, a hard walk, dancing alone in your room. Your body processes the energy instead of it getting stuck.",
+    'P': "Paced breathing slows down the automatic spiral. If you're spinning, a slower exhale than inhale (like 4 in, 6 out) tells your nervous system it's safe. It can't fix the feeling, but it can interrupt the acceleration.",
+    'P2': "Paired muscle relaxation lets you feel what's actually happening in your body separate from what the story is telling you. Tension is real; catastrophe is optional. Relaxing intentionally creates that separation."
+};
 
 function initChainGame() {
     chainGameIndex = 0;
@@ -1254,58 +1270,53 @@ function clickChainLink(idx, scenario) {
 }
 
 function selectChainSkill(btn, skill) {
-    const scenario = chainScenarios[chainGameIndex];
-    const breakPoint = scenario.breakPoints.find(bp => bp.linkIdx === chainCurrentLink);
-    const isCorrect = breakPoint.correct.includes(skill);
+    chainSelectedSkill = skill;
+
+    // Hide skill buttons and show tips
+    document.querySelectorAll('.chain-skill-btn').forEach(b => {
+        b.style.display = 'none';
+    });
 
     const feedback = document.getElementById('chain-feedback');
     feedback.style.display = 'block';
 
-    document.querySelectorAll('.chain-skill-btn').forEach(b => {
-        b.disabled = true;
-        if (b !== btn) b.style.opacity = '0.3';
-    });
+    // Get the skill label
+    const skillLabels = { 'T': 'Temperature', 'I': 'Intense exercise', 'P': 'Paced breathing', 'P2': 'Paired muscle relaxation' };
+    document.getElementById('chain-tips').innerHTML = `<strong style="color: var(--text); display: block; margin-bottom: 0.5rem;">${skillLabels[skill]}</strong>${skillTips[skill]}`;
 
-    if (isCorrect) {
-        btn.style.background = 'var(--accent-bg)';
-        btn.style.color = 'var(--accent)';
-        btn.style.transform = 'scale(1.05)';
-        feedback.innerHTML = `<strong style="color: var(--accent);">✓ Chain breaking!</strong> You interrupted the link.`;
+    // Scroll to feedback
+    feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 
-        // Animate the broken link
-        const allLinks = document.querySelectorAll('.chain-link');
-        let linkCount = 0;
-        allLinks.forEach((el, i) => {
-            if (linkCount === chainCurrentLink) {
-                el.classList.add('breaking');
-            }
-            if (!el.classList.contains('broken')) linkCount++;
-        });
+function continueChainBreak() {
+    const scenario = chainScenarios[chainGameIndex];
 
-        chainBrokenLinks.add(chainCurrentLink);
-        chainBreaksFound++;
-        document.getElementById('chain-breaks-count').textContent = chainBreaksFound;
-        const progressPercent = (chainBreaksFound / scenario.breakPoints.length * 100);
-        document.getElementById('chain-progress-fill').style.width = progressPercent + '%';
+    // Break the link
+    chainBrokenLinks.add(chainCurrentLink);
+    chainBreaksFound++;
+    document.getElementById('chain-breaks-count').textContent = chainBreaksFound;
+    const progressPercent = (chainBreaksFound / scenario.breakPoints.length * 100);
+    document.getElementById('chain-progress-fill').style.width = progressPercent + '%';
 
-        // Re-render chain with broken link
+    // Re-render chain with broken link
+    renderChainVisual(scenario);
+    updateUrgencyMeter();
+    document.getElementById('chain-break-interface').style.display = 'none';
+
+    // Clear reflection input
+    document.getElementById('chain-reflection-input').value = '';
+    chainSelectedSkill = null;
+
+    if (chainBreaksFound === scenario.breakPoints.length) {
         setTimeout(() => {
-            renderChainVisual(scenario);
-            updateUrgencyMeter();
-            document.getElementById('chain-break-interface').style.display = 'none';
-
-            if (chainBreaksFound === scenario.breakPoints.length) {
-                setTimeout(() => {
-                    document.getElementById('chain-next-container').style.display = 'block';
-                    document.getElementById('chain-next-container').style.animation = 'slideDown 0.3s ease-out';
-                }, 600);
-            }
-        }, 400);
-    } else {
-        btn.style.background = '#E7E5E4';
-        btn.style.color = '#A8A29E';
-        feedback.innerHTML = `<strong>Not the right fit.</strong> Try a different skill for this link.`;
+            document.getElementById('chain-next-container').style.display = 'block';
+            document.getElementById('chain-next-container').style.animation = 'slideDown 0.3s ease-out';
+        }, 300);
     }
+}
+
+function skipChainReflection() {
+    continueChainBreak();
 }
 
 function nextChainScenario() {
